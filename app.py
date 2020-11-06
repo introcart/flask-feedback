@@ -99,3 +99,15 @@ def update_feedback(id):
             return redirect(f"/users/{fb.user.username}")
         else:
             return render_template("add_feedback.html", form=form)
+
+@app.route('/feedback/<int:id>/delete', methods=["POST"])
+def delete_feedback(id):
+        if 'username' not in session:
+            flash("Please login first!", "danger")
+            return redirect('/')
+        fb = Feedback.query.get_or_404(id)
+        username = fb.user.username
+        Feedback.query.filter_by(id=id).delete()
+        db.session.commit()
+        return redirect(f'/users/{username}')
+
